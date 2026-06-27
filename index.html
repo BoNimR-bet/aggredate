@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.github.com https://gitlab.com https://api.npmjs.org https://pypistats.org https://hub.docker.com https://api.producthunt.com https://www.producthunt.com; img-src 'self' data: https://api.producthunt.com; style-src 'self' 'unsafe-inline'; script-src 'self';">
+<title>Aggredate Studio</title>
+<meta name="description" content="Desktop editor for Aggredate live traction widgets.">
+<link rel="stylesheet" href="app/styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="rail" aria-label="Project">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="24" height="24">
+          <path d="M17.6 3 7.4 16.1c-.7.9-.1 2.2 1 2.2h5.2l-1.4 10.2c-.2 1.2 1.3 1.8 2 .8L24.6 15.9c.7-.9.1-2.2-1-2.2h-5.1L19.8 3.8c.2-1.2-1.4-1.8-2.2-.8z" fill="currentColor"/>
+        </svg>
+      </div>
+      <div>
+        <strong>Aggredate</strong>
+        <span>Studio</span>
+      </div>
+    </div>
+
+    <label class="rail-label" for="project-select">Project</label>
+    <select id="project-select" class="select"></select>
+
+    <div class="rail-buttons">
+      <button class="icon-button" id="new-project" type="button" title="New project" aria-label="New project">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-button" id="save-project" type="button" title="Save project" aria-label="Save project">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM7 3v7h8M7 21v-8h10v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="icon-button danger" id="delete-project" type="button" title="Delete project" aria-label="Delete project">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2m-9 0 1 15h8l1-15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="source-status" aria-live="polite">
+          <div class="status-row">
+            <span>GitHub</span>
+            <b id="status-github">Missing</b>
+          </div>
+          <div class="status-row">
+            <span>GitLab</span>
+            <b id="status-gitlab">Missing</b>
+          </div>
+          <div class="status-row">
+            <span>Product Hunt</span>
+            <b id="status-ph">Missing</b>
+          </div>
+          <div class="status-row">
+            <span>npm</span>
+            <b id="status-npm">Missing</b>
+          </div>
+          <div class="status-row">
+            <span>PyPI</span>
+            <b id="status-pypi">Missing</b>
+          </div>
+          <div class="status-row">
+            <span>Docker</span>
+            <b id="status-docker">Missing</b>
+          </div>
+    </div>
+
+    <div class="rail-spacer"></div>
+
+    <button class="rail-command" id="import-project" type="button">
+      <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Import
+    </button>
+    <button class="rail-command" id="export-project" type="button">
+      <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 21V9m0 0 4 4m-4-4-4 4M4 5h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Export
+    </button>
+  </aside>
+
+  <main class="workspace">
+    <header class="topbar">
+      <div>
+        <p class="kicker">Local badge editor</p>
+        <h1>Build, preview, and edit the widget</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="secondary-button" id="reset-project" type="button">Reset</button>
+        <button class="primary-button" id="copy-primary" type="button">
+          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M8 8h10v12H8zM6 16H4V4h12v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          Copy code
+        </button>
+      </div>
+    </header>
+
+    <div class="work-grid">
+      <form class="editor" id="editor-form" autocomplete="off">
+        <section class="editor-section">
+          <div class="section-title">
+            <h2>Sources</h2>
+            <span id="source-count">0 active</span>
+          </div>
+
+          <label class="field">
+            <span>Project name</span>
+            <input id="project-name" type="text" spellcheck="false" placeholder="My launch badge">
+          </label>
+
+          <label class="field">
+            <span>GitHub repo</span>
+            <input id="github" type="text" spellcheck="false" placeholder="https://github.com/owner/repo">
+          </label>
+
+          <label class="field">
+            <span>GitLab project</span>
+            <input id="gitlab" type="text" spellcheck="false" placeholder="https://gitlab.com/group/project">
+          </label>
+
+          <label class="field">
+            <span>npm package</span>
+            <input id="npm" type="text" spellcheck="false" placeholder="my-package or https://www.npmjs.com/package/my-package">
+          </label>
+
+          <label class="field">
+            <span>npm period</span>
+            <select id="npm-period">
+              <option value="week">Per week</option>
+              <option value="month">Per month</option>
+              <option value="year">Per year</option>
+              <option value="day">Per day</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Product Hunt</span>
+            <textarea id="product-hunt" spellcheck="false" rows="4" placeholder="Post id, Product Hunt URL, or embed code"></textarea>
+          </label>
+
+          <label class="field">
+            <span>PyPI package</span>
+            <input id="pypi" type="text" spellcheck="false" placeholder="requests or https://pypi.org/project/requests/">
+          </label>
+
+          <label class="field">
+            <span>PyPI period</span>
+            <select id="pypi-period">
+              <option value="month">Per month</option>
+              <option value="week">Per week</option>
+              <option value="day">Per day</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Docker Hub image</span>
+            <input id="docker" type="text" spellcheck="false" placeholder="library/nginx or yourname/image">
+          </label>
+
+          <div class="field-grid">
+            <label class="field">
+              <span>Custom label</span>
+              <input id="custom-label" type="text" spellcheck="false" placeholder="waitlist">
+            </label>
+            <label class="field">
+              <span>Custom value</span>
+              <input id="custom-value" type="text" spellcheck="false" placeholder="1.2k">
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Custom URL</span>
+            <input id="custom-url" type="text" spellcheck="false" placeholder="https://your-site.com/waitlist">
+          </label>
+        </section>
+
+        <section class="editor-section">
+          <div class="section-title">
+            <h2>Style</h2>
+            <span id="theme-readout">Auto</span>
+          </div>
+
+          <label class="field">
+            <span>Theme</span>
+            <select id="theme">
+              <option value="auto">Auto</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Accent</span>
+            <div class="accent-row">
+              <input id="accent" type="color" value="#0f766e" aria-label="Accent color">
+              <button class="swatch" type="button" data-accent="#0f766e" style="--swatch:#0f766e" title="Teal"></button>
+              <button class="swatch" type="button" data-accent="#be123c" style="--swatch:#be123c" title="Rose"></button>
+              <button class="swatch" type="button" data-accent="#b45309" style="--swatch:#b45309" title="Amber"></button>
+              <button class="swatch" type="button" data-accent="#2563eb" style="--swatch:#2563eb" title="Blue"></button>
+            </div>
+          </label>
+
+          <div class="segmented" role="group" aria-label="Widget size">
+            <button type="button" data-size="md">Standard</button>
+            <button type="button" data-size="sm">Compact</button>
+          </div>
+
+          <label class="toggle-line">
+            <input id="labels" type="checkbox">
+            <span>Show labels</span>
+          </label>
+
+          <label class="toggle-line">
+            <input id="branding" type="checkbox">
+            <span>Show Aggredate credit</span>
+          </label>
+        </section>
+
+        <section class="editor-section">
+          <div class="section-title">
+            <h2>Output</h2>
+            <span>Hosted paths</span>
+          </div>
+
+          <label class="field">
+            <span>Hosted base URL</span>
+            <input id="host-base" type="text" spellcheck="false" placeholder="https://your-site.com">
+          </label>
+
+          <label class="field">
+            <span>API endpoint</span>
+            <input id="api" type="text" spellcheck="false" placeholder="https://your-site.com/api/badge">
+          </label>
+
+          <label class="field">
+            <span>Badge label</span>
+            <input id="badge-label" type="text" spellcheck="false" placeholder="traction">
+          </label>
+
+          <label class="field">
+            <span>Click target</span>
+            <input id="link-target" type="text" spellcheck="false" placeholder="https://your-site.com">
+          </label>
+        </section>
+      </form>
+
+      <section class="stage" aria-label="Preview and code">
+        <div class="preview-toolbar">
+          <div class="tabbar" role="tablist" aria-label="Preview background">
+            <button type="button" data-preview-bg="light">Light</button>
+            <button type="button" data-preview-bg="dark">Dark</button>
+            <button type="button" data-preview-bg="grid">Grid</button>
+          </div>
+          <div class="preview-meta" id="preview-meta">Ready</div>
+        </div>
+
+        <div class="preview-shell" id="preview-shell">
+          <div class="preview-card">
+            <div id="live-preview" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="output-panel">
+          <div class="output-head">
+            <div class="tabbar code-tabs" role="tablist" aria-label="Generated code">
+              <button type="button" data-code-tab="website">Website</button>
+              <button type="button" data-code-tab="inline">Local</button>
+              <button type="button" data-code-tab="readme">README</button>
+              <button type="button" data-code-tab="backend">API</button>
+            </div>
+            <button class="secondary-button small" id="copy-code" type="button">
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 8h10v12H8zM6 16H4V4h12v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+              Copy
+            </button>
+          </div>
+          <textarea id="code" spellcheck="false" readonly></textarea>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<input id="file-import" type="file" accept="application/json" hidden>
+<script src="aggredate.js"></script>
+<script src="app/renderer.js"></script>
+</body>
+</html>

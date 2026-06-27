@@ -1,0 +1,88 @@
+{
+  "name": "aggredate",
+  "version": "2.2.0",
+  "private": true,
+  "description": "Desktop editor and embeddable widget for live GitHub, Product Hunt, and npm traction badges.",
+  "desktopName": "aggredate-studio",
+  "main": "electron/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "vercel dev",
+    "test": "node test/test.js",
+    "app:dev": "electron .",
+    "dist": "electron-builder --publish never",
+    "dist:win": "electron-builder --win nsis portable --publish never",
+    "dist:linux": "electron-builder --linux AppImage deb --publish never",
+    "dist:mac": "electron-builder --mac dmg zip --publish never",
+    "dist:all": "electron-builder -mwl --publish never"
+  },
+  "keywords": [
+    "badge",
+    "github-stars",
+    "product-hunt",
+    "npm-downloads",
+    "electron",
+    "desktop-app"
+  ],
+  "author": "mrBONI",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^42.5.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "dev.aggredate.studio",
+    "productName": "Aggredate Studio",
+    "icon": "assets/icon",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.html",
+      "aggredate.js",
+      "app/**",
+      "assets/**",
+      "electron/**",
+      "api/**",
+      "README.md",
+      "LICENSE",
+      "MONETIZATION.md",
+      "REMOVE_BRANDING_LICENSE.md",
+      ".env.example"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "artifactName": "${productName}-${version}-windows-installer-${arch}.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-windows-portable-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development",
+      "syncDesktopName": true,
+      "artifactName": "${productName}-${version}-linux-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.developer-tools",
+      "artifactName": "${productName}-${version}-mac-${arch}.${ext}"
+    }
+  }
+}
