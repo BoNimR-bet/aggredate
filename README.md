@@ -26,7 +26,6 @@ The app edits projects locally, previews the widget live, and generates copy-pas
 | `aggredate.js` | Dependency-free website widget. |
 | `api/badge.js` | Optional Vercel JSON API for cached counts. |
 | `api/readme-badge.js` | SVG badge endpoint for GitHub READMEs. |
-| `docs/` | Platform, widget, app, and packaging docs. |
 | `test/test.js` | Offline unit tests with mocked network calls. |
 
 ## Install
@@ -62,8 +61,6 @@ npm run dist:mac
 Artifacts are written to `dist/`.
 
 Windows builds produce NSIS and portable packages. Linux builds produce AppImage and `.deb`. macOS builds produce DMG and zip. Build macOS installers on macOS for reliable signing/notarization.
-
-More details: [docs/PACKAGING.md](docs/PACKAGING.md).
 
 ## Website Widget Quick Start
 
@@ -109,13 +106,26 @@ PH_TOKEN=
 GITHUB_TOKEN=
 ```
 
-## Documentation
+## Widget Attributes
 
-- [Desktop app](docs/DESKTOP_APP.md)
-- [Supported platforms](docs/PLATFORMS.md)
-- [Widget API](docs/WIDGET_API.md)
-- [Packaging and installers](docs/PACKAGING.md)
-- [Monetization notes](MONETIZATION.md)
+| Attribute | Example | Description |
+| --- | --- | --- |
+| `data-github` | `owner/repo` | GitHub stars. |
+| `data-gitlab` | `group/project` | GitLab stars. |
+| `data-ph-id` | `123456` | Product Hunt post id. |
+| `data-npm` | `package` | npm downloads. |
+| `data-pypi` | `requests` | PyPI downloads. |
+| `data-docker` | `owner/image` | Docker Hub pulls. |
+| `data-custom-label` | `waitlist` | Static custom label. |
+| `data-custom-value` | `1.2k` | Static custom value. |
+| `data-theme` | `auto` | `auto`, `light`, or `dark`. |
+| `data-accent` | `#0f766e` | Accent color. |
+| `data-size` | `sm` | `md` or `sm`. |
+| `data-api` | `/api/badge` | Use the backend for unified counts. |
+
+## Installer CI
+
+The workflow at `.github/workflows/build-installers.yml` builds Windows, Linux, and macOS artifacts on native GitHub Actions runners when you push a `v*` tag or run it manually.
 
 ## License
 

@@ -46,8 +46,6 @@
       "api/**",
       "README.md",
       "LICENSE",
-      "MONETIZATION.md",
-      "REMOVE_BRANDING_LICENSE.md",
       ".env.example"
     ],
     "win": {
